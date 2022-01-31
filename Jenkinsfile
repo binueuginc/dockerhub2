@@ -46,7 +46,7 @@ pipeline {
 			}	
 	      steps {
 		      script {
-			      gv.apptesting()
+			      gv.appTesting()
 		      }
 		
 		  }
