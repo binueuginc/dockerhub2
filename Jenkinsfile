@@ -2,6 +2,10 @@
 def gv
 pipeline {
    agent any
+	 tools {
+             maven 'maven'
+             jdk '1.8.0_161'
+         }
      parameters {
 	    choice (name: 'VERSION', choices: ['1.0.0', '1.0.1', '1.0.2'], description: 'Deployment of selected version')
 	        booleanParam(name: 'appBuild', defaultValue: true, description: '')
