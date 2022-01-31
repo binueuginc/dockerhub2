@@ -1,5 +1,9 @@
  def appBuild(){
    echo "App Build"
+   	sh '''
+            echo "PATH = ${PATH}"
+             echo "M2_HOME = ${M2_HOME}"
+          '''
  }
  def appTesting(){
  echo "Testing application......"
