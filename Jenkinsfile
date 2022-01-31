@@ -4,10 +4,10 @@ pipeline {
    agent any
      parameters {
 	    choice (name: 'VERSION', choices: ['1.0.0', '1.0.1', '1.0.2'], description: 'Deployment of selected version')
-	        booleanParam(name: 'appBuild', defaultValue: false, description: '')
+	        booleanParam(name: 'appBuild', defaultValue: true, description: '')
 		booleanParam(name: 'appTesting', defaultValue: false, description: '')
-	        booleanParam(name: 'dockerBuild', defaultValue: false, description: '')
-	        booleanParam(name: 'dockerPush', defaultValue: false, description: '')
+	        booleanParam(name: 'dockerBuild', defaultValue: true, description: '')
+	        booleanParam(name: 'dockerPush', defaultValue: true, description: '')
 	        booleanParam(name: 'remoteServerDeploy', defaultValue: false, description: '')
 	        booleanParam(name: 'awsEcsDeploy', defaultValue: false, description: '')
 	        booleanParam(name: 'dockerClean', defaultValue: true, description: '')
