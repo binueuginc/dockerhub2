@@ -4,14 +4,13 @@ pipeline {
    agent any
      parameters {
 	    choice (name: 'VERSION', choices: ['1.0.0', '1.0.1', '1.0.2'], description: 'Deployment of selected version')
-	        booleanParam(name: 'executeBuild', defaultValue: true, description: '')
-		booleanParam(name: 'executeTest', defaultValue: false, description: '')
-	        choice (name: 'BRANCH', choices: ['master', 'prod', 'dev', 'sanity'], description: 'Deployment Git Branch  selected')
-	        booleanParam(name: 'executeDockerPush', defaultValue: false, description: '')
-	        booleanParam(name: 'executeTestDeploy', defaultValue: false, description: '')
-	        booleanParam(name: 'executeAwsEcsDeploy', defaultValue: false, description: '')
-	        booleanParam(name: 'executeCleanUp', defaultValue: false, description: '')
-	        booleanParam(name: 'executeDockerClean', defaultValue: true, description: '')
+	        booleanParam(name: 'appBuild', defaultValue: false, description: '')
+		booleanParam(name: 'appTesting', defaultValue: false, description: '')
+	        booleanParam(name: 'dockerBuild', defaultValue: false, description: '')
+	        booleanParam(name: 'dockerPush', defaultValue: false, description: '')
+	        booleanParam(name: 'remoteServerDeploy', defaultValue: false, description: '')
+	        booleanParam(name: 'awsEcsDeploy', defaultValue: false, description: '')
+	        booleanParam(name: 'dockerClean', defaultValue: true, description: '')
 		}
 	environment {
 		DOCKERRUN = "docker run -p 8080:8080 my-app binueuginc/sample-myapp:${params.VERSION} " 
@@ -26,35 +25,48 @@ pipeline {
 		   }
 	    }
 		
-	   stage('build') {
+	   stage('Appbuild') {
 	      when {
 		     expression {
-			     BRANCH_NAME == "${params.BRANCH}" && params.executeBuild == true 
+			     params.appBuild == true 
 				}
 			}	
 	      steps {
 		      script {
-			      gv.dockerBuild()
+			      gv.appBuild()
 		      }
 		
 		  }
 		}
-		stage('test'){
+	 stage('appTest') {
+	      when {
+		     expression {
+			     params.appTesting == true 
+				}
+			}	
+	      steps {
+		      script {
+			      gv.apptesting()
+		      }
+		
+		  }
+		}
+		stage('dockerBuild'){
 		   when {
 		      expression {
-			     params.executeTest == true 
+			     params.dockerBuild == true 
 				 }
 		   }
 		   steps{
 			   script {
-		               gv.testApp()
+		               gv.dockerBuild()
 			 }
 		     }
 		}
 		 stage('dockerPush'){
 		   when {
 		      expression {
-			      params.executeDockerPush == true 
+			      params.dockerPush == true 
 				 }
 		    }
 		   steps{
@@ -63,15 +75,15 @@ pipeline {
 			   }
                    }
 		}
-		stage('dockerTestDeploy'){
+		stage('remoteServerDeploy'){
 		   when {
 		      expression {
-			      params.executeTestDeploy == true && BRANCH_NAME == "${params.BRANCH}"
+			      params.remoteServerDeploy == true 
 				 }
 		    }
 		   steps{
 			   script {
-		               gv.dockerDeployApp()
+		               gv.dockerRemoteDeployApp()
 			   }
              }
 		}
@@ -100,19 +112,5 @@ pipeline {
                    }
 	    }
      }	
-    post {
-   
-        cleanup {
-            /* clean up our workspace */
-            deleteDir()
-            /* clean up tmp directory */
-            dir("${workspace}@tmp") {
-                deleteDir()
-            }
-            /* clean up script directory */
-            dir("${workspace}@script") {
-                deleteDir()
-            }
-        }
-    }
+
 }
