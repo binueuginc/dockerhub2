@@ -1,7 +1,7 @@
  def appBuild(){
    echo "App Build"
  }
- def apptesting(){
+ def appTesting(){
  echo "Testing application......"
  }
  def dockerBuild(){
